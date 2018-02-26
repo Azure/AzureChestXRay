@@ -1,0 +1,55 @@
+# Conda environment specification. The dependencies defined in this file will
+# be automatically provisioned for managed runs. These include runs against
+# the localdocker, remotedocker, and cluster compute targets.
+
+# Note that this file is NOT used to automatically manage dependencies for the
+# local compute target. To provision these dependencies locally, run:
+# conda env update --file conda_dependencies.yml
+
+# Details about the Conda environment file format:
+# https://conda.io/docs/using/envs.html#create-environment-file-by-hand
+
+# For managing Spark packages and configuration, see spark_dependencies.yml.
+
+# Version of this configuration file's structure and semantics in AzureML.
+# This directive is stored in a comment to preserve the Conda file structure.
+# [AzureMlVersion] = 2
+
+name: project_environment
+channels:
+  # - conda-forge
+  - pytorch #soumith
+dependencies:
+  # The python interpreter version.
+  # Currently Azure ML Workbench only supports 3.5.2.
+  - python=3.5.2
+  - tqdm 
+  - opencv
+  - h5py
+  - scikit-learn
+  - nomkl
+  # - pytorch=0.3.0
+  # - cuda80
+  # - torchvision
+
+  # Required for Jupyter Notebooks.
+  - ipykernel=4.6.1
+
+  - pip:
+    # Required packages for AzureML execution, history, and data preparation.
+    - --index-url https://azuremldownloads.azureedge.net/python-repository/preview
+    - --extra-index-url https://pypi.python.org/simple
+    - azureml-requirements
+
+    # The API for Azure Machine Learning Model Management Service.
+    # Details: https://github.com/Azure/Machine-Learning-Operationalization
+    - azure-ml-api-sdk==0.1.0a11
+    - git+git://github.com/fchollet/keras.git
+    - git+https://github.com/ahundt/keras-contrib.git
+    - tensorflow-gpu==1.4
+    - matplotlib
+    - numpy==1.14.0    
+    - git+https://github.com/aleju/imgaug
+    - http://download.pytorch.org/whl/cu80/torch-0.3.1-cp35-cp35m-linux_x86_64.whl
+    # - http://download.pytorch.org/whl/cu80/torch-0.3.0.post4-cp35-cp35m-manylinux1_x86_64.whl 
+    - torchvision

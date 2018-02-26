@@ -1,0 +1,12 @@
+address: ghiordanxrgpuvm02.westus2.cloudapp.azure.com
+#baseDockerImage: microsoft/mmlspark:plus-0.9.9
+baseDockerImage: georgedockeraccount/utils_with_amlwb_base_gpu:azcopyenabled
+nvidiaDocker: true
+
+#nativeSharedDirectory: ~/.azureml/share/
+nativeSharedDirectory: /datadrive01/amlwbShare/
+
+password: AzureMlSecret=gpucomputecontext#loginvm0011#56bdbc19d02f4df08a50f94cfc8ec9ef
+sharedVolumes: true
+type: remotedocker
+username: loginvm0011
