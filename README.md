@@ -34,13 +34,9 @@ We've got the following result, and the average AUROC across all the 14 diseases
 | Nodule       | 0.907841  | Pleural Thickening | 0.793416  |
 | Pneumonia    | 0.817601  | Hernia             | 0.889089  |
 
-# Training time
-It takes 20 mins (1221s) to train a single epoch on 2 K80 GPUs, or around 40 mins to train on 1 K80 GPUs. Usually it takes around 
 
 # Criticisms
-There are a few criticisms around this data set. One of them is conducted by an author who has both medical and CS background: https://lukeoakdenrayner.wordpress.com/2017/12/18/the-chestxray14-dataset-problems/
-
-
+There are several discussions in the community on the efficacy of using NLP to mine the disease labels, and how it might potentially lead to poor label quality (for example, [here](https://lukeoakdenrayner.wordpress.com/2018/01/24/chexnet-an-in-depth-review/), as well as in [this article on Medium](https://medium.com/@paras42/dear-mythical-editor-radiologist-level-pneumonia-in-chexnet-c91041223526)). However, even with dirty labels, deep learning models are sometimes still able to achieve good classification performance.
 
 # Referenced papers
 - The original chexnet paper mentioned in [StanfordML website](https://stanfordmlgroup.github.io/projects/chexnet/) as well as their [paper](https://arxiv.org/abs/1711.05225).
@@ -49,7 +45,7 @@ There are a few criticisms around this data set. One of them is conducted by an 
 - Baseline result: https://arxiv.org/abs/1705.02315
 - Image Localization http://arxiv.org/abs/1512.04150
 
-# Conclusion, Acknowledgement, and thanks
+# Conclusion, acknowledgement, and thanks
 Some of the pre-processing code for Keras is borrowed from [the dr.b repository](https://github.com/taoddiao/dr.b).
 
 We hope this repository will be helpful in your research project and please let us know if you have any questions or feedbacks. Pull requests are also welcome!
