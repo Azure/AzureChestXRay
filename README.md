@@ -1,11 +1,20 @@
 # Introduction
 This repository contains the code for the blog post: [Using Microsoft AI to Build a Lung-Disease Prediction Model using Chest X-Ray Images](https://blogs.technet.microsoft.com/machinelearning/2018/03/07/using-microsoft-ai-to-build-a-lung-disease-prediction-model-using-chest-x-ray-images/), by Xiaoyong Zhu, George Iordanescu, Ilia Karmanov, data scientists from Microsoft, and Mazen Zawaideh, radiologist resident from University of Washington Medical Center.
 
-In this repostory, we provide you the Keras code
+In this repostory, we provide you the Keras code (001-003 Jupyter Notebooks under AzureChestXRay_AMLWB\Code\02_Model) and PyTorch code (AzureChestXRay_AMLWB\Code\02_Model060_Train_pyTorch). You should be able to run the code from scratch and get the below result using Azure Machine Learning platform or run it using your own GPU machine.
 
 # Get Started
 
+## Installing additional packages
+
+If you are using Azure Machine Learning as the training platform, all the dependencies should be installed. However, if you are trying out in your own environment, you should also install [keras-contrib](https://github.com/keras-team/keras-contrib) repository to run Keras code.
+
+If you are trying out the lung detection algorithm, you need to install a few other additional libraries. Please refer to the README.md file under folder AzureChestXRay\AzureChestXRay_AMLWB\Code\src\finding_lungs for more details.
+
+## Running the code
 To run the code, you need to get the NIH Chest X-ray Dataset from here: https://nihcc.app.box.com/v/ChestXray-NIHCC. You need to get all the image files (all the files under `images` folder in NIH Dataset), Data_Entry_2017.csv file, as well as the Bounding Box data BBox_List_2017.csv. You might also want to remove a few low_quality images (Please refer to subfolder AzureChestXRay_AMLWB\Code\src\finding_lungs for more details).
+
+
 
 #	Tools and Platforms
 - Deep Learning VMs with GPU acceleration is used as the compute environment
@@ -25,7 +34,23 @@ We've got the following result, and the average AUROC across all the 14 diseases
 | Nodule       | 0.907841  | Pleural Thickening | 0.793416  |
 | Pneumonia    | 0.817601  | Hernia             | 0.889089  |
 
-# Conclusion & Thanks
+# Training time
+It takes 20 mins (1221s) to train a single epoch on 2 K80 GPUs, or around 40 mins to train on 1 K80 GPUs. Usually it takes around 
+
+# Criticisms
+There are a few criticisms around this data set. One of them is conducted by an author who has both medical and CS background: https://lukeoakdenrayner.wordpress.com/2017/12/18/the-chestxray14-dataset-problems/
+
+
+
+# Referenced papers
+- The original chexnet paper mentioned in [StanfordML website](https://stanfordmlgroup.github.io/projects/chexnet/) as well as their [paper](https://arxiv.org/abs/1711.05225).
+- http://cs231n.stanford.edu/reports/2017/pdfs/527.pdf for pre-processing the data
+- https://arxiv.org/abs/1711.08760 for some other thoughts on the model architecture and the relationship between different diseases
+- Baseline result: https://arxiv.org/abs/1705.02315
+- Image Localization http://arxiv.org/abs/1512.04150
+
+# Conclusion, Acknowledgement, and thanks
+Some of the pre-processing code for Keras is borrowed from [the dr.b repository](https://github.com/taoddiao/dr.b).
 
 We hope this repository will be helpful in your research project and please let us know if you have any questions or feedbacks. Pull requests are also welcome!
 
