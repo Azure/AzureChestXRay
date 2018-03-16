@@ -52,9 +52,10 @@ We hope this repository will be helpful in your research project and please let 
 
 We also would like to thank Pranav Rajpurkar and Jeremy Irvin from Stanford for answering our questions about their implementation, as well as Wee Hyong Tok, Danielle Dean, Hanna Kim, and Ivan Tarapov from Microsoft for reviewing the blog post and providing their feedback.
 
+# Disclaimer
+The source code, tools, and discussion in this repository are provided to assist data scientists in understanding the potential for developing deep learning -driven intelligent applications using Azure AI services and are intended for research and development use only. The x-ray image pathology classification system is not intended for use in clinical diagnosis or clinical decision-making or for any other clinical use. The performance of this model for clinical use has not been established.
 
 # Contributing
-
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
 the rights to use your contribution. For details, visit https://cla.microsoft.com.
