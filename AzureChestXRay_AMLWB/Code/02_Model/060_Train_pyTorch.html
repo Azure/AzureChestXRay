@@ -11927,6 +11927,8 @@ div#notebook {
 <div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;OS: &quot;</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">platform</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Python: &quot;</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;PyTorch: &quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numpy: &quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+
 <span class="n">CPU_COUNT</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CPUs: &quot;</span><span class="p">,</span> <span class="n">CPU_COUNT</span><span class="p">)</span>
 </pre></div>
@@ -11949,6 +11951,7 @@ div#notebook {
 Python:  3.5.2 |Continuum Analytics, Inc.| (default, Jul  2 2016, 17:53:06) 
 [GCC 4.4.7 20120313 (Red Hat 4.4.7-1)]
 PyTorch:  0.3.1
+Numpy:  1.14.0
 CPUs:  12
 </pre>
 </div>
@@ -11971,11 +11974,11 @@ CPUs:  12
 <span class="n">HEIGHT</span> <span class="o">=</span> <span class="mi">224</span>
 <span class="n">CHANNELS</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">LR</span> <span class="o">=</span> <span class="mf">0.0001</span>
-<span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#100</span>
+<span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#100</span>
 <span class="c1"># Can scale to max for inference but for training LR will be affected</span>
 <span class="c1"># Prob better to increase this though on P100 since LR is not too low</span>
 <span class="c1"># Easier to see when plotted</span>
-<span class="n">BATCHSIZE</span> <span class="o">=</span> <span class="mi">64</span><span class="o">*</span><span class="mi">2</span>
+<span class="n">BATCHSIZE</span> <span class="o">=</span> <span class="mi">16</span> <span class="c1">#64*2</span>
 <span class="n">IMAGENET_RGB_MEAN</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.485</span><span class="p">,</span> <span class="mf">0.456</span><span class="p">,</span> <span class="mf">0.406</span><span class="p">]</span>
 <span class="n">IMAGENET_RGB_SD</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.229</span><span class="p">,</span> <span class="mf">0.224</span><span class="p">,</span> <span class="mf">0.225</span><span class="p">]</span>
 </pre></div>
@@ -12593,16 +12596,16 @@ Loaded 33303 labels and 33303 images
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># DataLoaders</span>
-<span class="c1"># 4*CPU_COUNT</span>
+<span class="c1"># num_workers=4*CPU_COUNT</span>
 <span class="c1"># pin_memory=True</span>
 <span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">BATCHSIZE</span><span class="p">,</span>
-                          <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="o">*</span><span class="n">CPU_COUNT</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                          <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">valid_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">valid_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">8</span><span class="o">*</span><span class="n">BATCHSIZE</span><span class="p">,</span>
                           <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="n">test_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="o">=</span><span class="n">test_dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">8</span><span class="o">*</span><span class="n">BATCHSIZE</span><span class="p">,</span>
-                         <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">4</span><span class="o">*</span><span class="n">CPU_COUNT</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                         <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">pin_memory</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -12650,7 +12653,7 @@ azure_chest_xray_sym = get_symbol()
 
 <div class="output_subarea output_stream output_stderr output_text">
 <pre>Downloading: &#34;https://download.pytorch.org/models/densenet121-a639ec97.pth&#34; to /home/mmlspark/.torch/models/densenet121-a639ec97.pth
-100%|██████████| 32342954/32342954 [00:00&lt;00:00, 50666489.38it/s]
+100%|██████████| 32342954/32342954 [00:00&lt;00:00, 55784863.78it/s]
 </pre>
 </div>
 </div>
@@ -12661,8 +12664,8 @@ azure_chest_xray_sym = get_symbol()
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 2.42 s, sys: 910 ms, total: 3.33 s
-Wall time: 18.3 s
+<pre>CPU times: user 2.65 s, sys: 1.01 s, total: 3.66 s
+Wall time: 3.92 s
 </pre>
 </div>
 </div>
@@ -12695,8 +12698,8 @@ optimizer, criterion, scheduler = init_symbol(azure_chest_xray_sym)
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>CPU times: user 2.04 ms, sys: 136 µs, total: 2.18 ms
-Wall time: 2.18 ms
+<pre>CPU times: user 1.89 ms, sys: 240 µs, total: 2.13 ms
+Wall time: 2.14 ms
 </pre>
 </div>
 </div>
@@ -12707,7 +12710,7 @@ Wall time: 2.18 ms
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="o">!</span>nvidia-smi
@@ -12729,18 +12732,18 @@ Wall time: 2.18 ms
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Wed Feb 14 08:09:54 2018       
+<pre>Wed Mar 21 13:05:22 2018       
 +-----------------------------------------------------------------------------+
 | NVIDIA-SMI 384.111                Driver Version: 384.111                   |
 |-------------------------------+----------------------+----------------------+
 | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
 | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
 |===============================+======================+======================|
-|   0  Tesla K80           Off  | 00002CD7:00:00.0 Off |                  Off |
-| N/A   38C    P0    72W / 149W |    241MiB / 12205MiB |      0%      Default |
+|   0  Tesla K80           Off  | 0000C3D4:00:00.0 Off |                  Off |
+| N/A   36C    P0    72W / 149W |    241MiB / 12205MiB |      0%      Default |
 +-------------------------------+----------------------+----------------------+
-|   1  Tesla K80           Off  | 000045C0:00:00.0 Off |                  Off |
-| N/A   42C    P8    28W / 149W |     11MiB / 12205MiB |      0%      Default |
+|   1  Tesla K80           Off  | 0000DCAE:00:00.0 Off |                  Off |
+| N/A   41C    P8    26W / 149W |     11MiB / 12205MiB |      0%      Default |
 +-------------------------------+----------------------+----------------------+
                                                                                
 +-----------------------------------------------------------------------------+
@@ -12760,7 +12763,7 @@ CUDA Version 8.0.61
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Original CheXNet ROC AUC = 0.841</span>
@@ -12807,6 +12810,55 @@ CUDA Version 8.0.61
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Validating epoch 0
+Validation loss: 0.5749
+Validation AUC: 0.5071
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[32]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>0.5748794953028361</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Training epoch 1
+Training loss: 0.1596
+Validating epoch 1
+Validation loss: 0.1471
+Validation AUC: 0.7662
+Testing epoch 1
+Test-Dataset loss: 0.1952
+Test-Dataset AUC: 0.7568
+Learining rate:  0.0001
+Loss decreased. Saving ...
+Epoch time: 9170 seconds
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Training epoch 2
+Training loss: 0.1516
+Validating epoch 2
+Validation loss: 0.1464
+Validation AUC: 0.7875
+Testing epoch 2
+Test-Dataset loss: 0.1908
+Test-Dataset AUC: 0.7820
+Learining rate:  0.0001
+Loss decreased. Saving ...
+Epoch time: 13616 seconds
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 </pre>
 </div>
 </div>
@@ -12817,7 +12869,7 @@ CUDA Version 8.0.61
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#####################################################################################################</span>
@@ -12832,13 +12884,13 @@ CUDA Version 8.0.61
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[34]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load model for testing</span>
 <span class="n">azure_chest_xray_sym_test</span> <span class="o">=</span> <span class="n">get_symbol</span><span class="p">()</span>
 <span class="n">chkpt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;best_azure_chest_xray_model_v2.pth.tar&quot;</span><span class="p">)</span>
-<span class="n">chexnet_sym_test</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">chkpt</span><span class="p">[</span><span class="s1">&#39;state_dict&#39;</span><span class="p">])</span>
+<span class="n">azure_chest_xray_sym_test</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">chkpt</span><span class="p">[</span><span class="s1">&#39;state_dict&#39;</span><span class="p">])</span>
 </pre></div>
 
 </div>
@@ -12848,7 +12900,7 @@ CUDA Version 8.0.61
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[35]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">valid_loss</span> <span class="o">=</span> <span class="n">valid_epoch</span><span class="p">(</span><span class="n">azure_chest_xray_sym_test</span><span class="p">,</span> <span class="n">valid_loader</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -12859,10 +12911,33 @@ CUDA Version 8.0.61
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Validating epoch 0
+Validation loss: 0.1464
+Validation AUC: 0.7875
+Testing epoch 0
+Test-Dataset loss: 0.1908
+Test-Dataset AUC: 0.7820
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[36]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#import torch.onnx</span>
@@ -12877,7 +12952,7 @@ CUDA Version 8.0.61
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[37]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># jupyter nbconvert --to html .\Code\02_Model\060_Train_pyTorch.ipynb</span>
