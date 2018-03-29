@@ -11985,7 +11985,8 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>total 0
+<pre>total 29396
+-rw-r--r-- 1 root root 30097832 Feb 28 06:59 azure_chest_xray_14_weights_712split_epoch_002_val_loss_213.3450.hdf5
 </pre>
 </div>
 </div>
@@ -12071,7 +12072,7 @@ div#notebook {
 <span class="c1"># resized_width = prj_consts.CHESTXRAY_MODEL_EXPECTED_IMAGE_WIDTH</span>
 <span class="n">num_channel</span> <span class="o">=</span> <span class="mi">3</span>
 <span class="n">num_classes</span> <span class="o">=</span> <span class="mi">14</span>
-<span class="n">epochs</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1">#200</span>
+<span class="n">epochs</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1">#200</span>
 </pre></div>
 
 </div>
@@ -12327,7 +12328,7 @@ div#notebook {
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>using 2 GPUs
 Downloading data from https://github.com/titu1994/DenseNet/releases/download/v3.0/DenseNet-BC-121-32-no-top.h5
-33202176/33199896 [==============================] - 8s 0us/step
+33202176/33199896 [==============================] - 1s 0us/step
 Weights for the model were loaded successfully
 </pre>
 </div>
@@ -12384,8 +12385,10 @@ Weights for the model were loaded successfully
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>for DataGenSequence train total rows are: 68508 , len is 713
 for DataGenSequence validation total rows are: 9495 , len is 98
-Epoch 1/1
-713/713 [==============================] - 1275s 2s/step - loss: 214.9958 - val_loss: 225.4705
+Epoch 1/2
+713/713 [==============================] - 1421s 2s/step - loss: 214.4905 - val_loss: 220.6052
+Epoch 2/2
+713/713 [==============================] - 1383s 2s/step - loss: 207.5056 - val_loss: 218.3652
 </pre>
 </div>
 </div>
@@ -12398,7 +12401,7 @@ Epoch 1/1
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f7e8955d5c0&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7f4e18388eb8&gt;</pre>
 </div>
 
 </div>

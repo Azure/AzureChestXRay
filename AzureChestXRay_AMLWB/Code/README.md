@@ -128,7 +128,8 @@ georgedockeraccount/utils_with_amlwb_base_gpu   azcopyenabled       2e6da7a1351c
    
    
 3. Use AMLWB File->Open PowerShell to opne a PS cli and then type __az ml notebook start__ to start notebook server and run experiment notebooks: 	   
-\Code\01_DataPrep\001_get_data.ipynb: takes 20 mins to downloaded the data from a blob storage account.   
+\Code\01_DataPrep\001_get_data.ipynb: takes 20 mins to downloaded the data from a blob storage account.  
+  Notes: Do not forget to add --source-key {crt_key} when calling azcopy (as described in the noebook) if the blob is not public.
 \Code\02_Model\000_preprocess.ipynb : creates the train/validate/test partitions    
 \Code\02_Model\010_train.ipynb : trains a densenet model (pretrained on imagenet) on NIH chest xray data using Keras deep learning framework  
 \Code\02_Model\060_Train_pyTorch.ipynb: trains a densenet model (pretrained on imagenet) on NIH chest xray data using pytorch.   
