@@ -17,14 +17,14 @@ def add_path_to_sys_path(path_to_append):
 import azure_chestxray_utils
 
 
-def get_score_and_cam_picture(cv2_input_image, DenseNetImageNet121_model):
+def get_score_and_cam_picture(cv2_input_image, DenseNet121_model):
 # based on https://github.com/jacobgil/keras-cam/blob/master/cam.py
     width, height, _ = cv2_input_image.shape
-    class_weights = DenseNetImageNet121_model.layers[-1].get_weights()[0]
-    final_conv_layer = DenseNetImageNet121_model.layers[-3]
-    get_output = K.function([DenseNetImageNet121_model.layers[0].input], 
+    class_weights = DenseNet121_model.layers[-1].get_weights()[0]
+    final_conv_layer = DenseNet121_model.layers[-3]
+    get_output = K.function([DenseNet121_model.layers[0].input], 
                             [final_conv_layer.output, \
-                             DenseNetImageNet121_model.layers[-1].output])
+                             DenseNet121_model.layers[-1].output])
     [conv_outputs, prediction] = get_output([cv2_input_image[None,:,:,:]])
     conv_outputs = conv_outputs[0, :, :, :]
     prediction = prediction[0,:]
@@ -92,7 +92,7 @@ def plot_cam_results(crt_blended_image, crt_cam_image, crt_xray_image, map_capti
     
 
     
-def process_xray_image(crt_xray_image, DenseNetImageNet121_model):
+def process_xray_image(crt_xray_image, DenseNet121_model):
 
 #     print(crt_xray_image.shape)
     crt_xray_image = azure_chestxray_utils.normalize_nd_array(crt_xray_image)
@@ -101,7 +101,7 @@ def process_xray_image(crt_xray_image, DenseNetImageNet121_model):
 
     crt_predictions, crt_cam_image, predicted_disease_index = \
     get_score_and_cam_picture(crt_xray_image, 
-                              DenseNetImageNet121_model)
+                              DenseNet121_model)
     
     prj_consts = azure_chestxray_utils.chestxray_consts()
     likely_disease=prj_consts.DISEASE_list[predicted_disease_index]
@@ -118,7 +118,7 @@ def process_xray_image(crt_xray_image, DenseNetImageNet121_model):
                     "{0:.1f}".format(likely_disease_prob)+ '% (weight ' +
                     "{0:.1f}".format(likely_disease_prob_ratio)+ '%)')
 
-def process_nih_data(nih_data_files, NIH_data_dir, DenseNetImageNet121_model):
+def process_nih_data(nih_data_files, NIH_data_dir, DenseNet121_model):
     for crt_image in nih_data_files:
         # print(crt_image)
         prj_consts = azure_chestxray_utils.chestxray_consts()
@@ -129,7 +129,7 @@ def process_nih_data(nih_data_files, NIH_data_dir, DenseNetImageNet121_model):
                                      prj_consts.CHESTXRAY_MODEL_EXPECTED_IMAGE_WIDTH)) \
                         .astype(np.float32)
 
-        process_xray_image(crt_xray_image, DenseNetImageNet121_model )   
+        process_xray_image(crt_xray_image, DenseNet121_model )   
         
 if __name__=="__main__":
     #FIXME

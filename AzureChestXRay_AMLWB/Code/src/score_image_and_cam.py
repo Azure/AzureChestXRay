@@ -3,13 +3,16 @@
 # operationalize the chestXray model
 
 
-import os, sys, pickle, base64
+import os, sys, pickle, base64, traceback
 import keras.models
 import keras.layers
 import keras_contrib.applications.densenet
+from keras_contrib.applications.densenet import DenseNetImageNet121
 import pandas as pd
 import numpy as np
-import azure_chestxray_utils, azure_chestxray_cam
+import cv2 
+
+import azure_chestxray_utils, azure_chestxray_cam, azure_chestxray_keras_utils
 
 ####################################
 # Parameters
@@ -19,7 +22,14 @@ global as_string_b64encoded_pickled_data_column_name
 as_string_b64encoded_pickled_data_column_name   = 'encoded_image'
 global densenet_weights_file_name
 # densenet_weights_file_name = 'weights_only_chestxray_model_14_weights_712split_epoch_029_val_loss_147.7599.hdf5'
-densenet_weights_file_name = 'weights_only_chestxray_model_14_weights_712split_epoch_029_val_loss_147.7599 - Copy.hdf5'
+# densenet_weights_file_name = 'weights_only_chestxray_model_14_weights_712split_epoch_029_val_loss_147.7599 - Copy.hdf5'
+densenet_weights_file_name = 'weights_only_azure_chest_xray_14_weights_712split_epoch_054_val_loss_191.2588.hdf5'
+
+densenet_final_weights_file_name = 'weightsazurechestxraymodel'
+
+global version_file_name
+version_file_name = 'version.txt'
+
 
 # Import data collection library. Only supported for docker mode.
 # Functionality will be ignored when package isn't found
@@ -51,6 +61,9 @@ def unpickled_b64decoded_as_bytes(input_object):
 
 def get_image_score_and_serialized_cam(crt_cv2_image, crt_chest_XRay_model):
     prj_consts = azure_chestxray_utils.chestxray_consts()
+    crt_cv2_image = cv2.resize(crt_cv2_image,\
+       (prj_consts.CHESTXRAY_MODEL_EXPECTED_IMAGE_WIDTH, 
+    prj_consts.CHESTXRAY_MODEL_EXPECTED_IMAGE_HEIGHT)).astype(np.float32)
     crt_cv2_image = azure_chestxray_utils.normalize_nd_array(crt_cv2_image)
     crt_cv2_image = 255*crt_cv2_image
     crt_cv2_image=crt_cv2_image.astype('uint8')
@@ -61,6 +74,19 @@ def get_image_score_and_serialized_cam(crt_cv2_image, crt_chest_XRay_model):
                  prj_consts.DISEASE_list[predicted_disease_index])
     return predictions, serialized_image
 
+def get_increasing_version_number(crt_version_file_name):
+    if not os.path.exists(crt_version_file_name):
+        with open(crt_version_file_name, "w") as version_file:
+            crt_version = 1
+            version_file.write("{}".format(crt_version))
+    with open(crt_version_file_name, 'r+') as version_file2:
+        crt_version=int(version_file2.read())
+        version_file2.seek(0)
+        version_file2.write("{}".format(crt_version+1))
+        version_file2.truncate()
+    return("v1.{}".format(crt_version))
+    
+get_increasing_version_number(version_file_name)
 ####################################
 # API functions
 ####################################
@@ -82,8 +108,8 @@ def init():
 
         # load the model file
         global chest_XRay_model
-        chest_XRay_model = azure_chestxray_utils.build_DenseNetImageNet201_model() 
-        chest_XRay_model.load_weights(densenet_weights_file_name)
+        chest_XRay_model = azure_chestxray_keras_utils.build_model(DenseNetImageNet121)
+        chest_XRay_model.load_weights(densenet_final_weights_file_name)
         print('Densenet model loaded')
         
     except Exception as e:
@@ -106,13 +132,20 @@ def run(input_df):
 
         #finally scoring
         predictions, serialized_cam_image = get_image_score_and_serialized_cam(input_cv2_image, chest_XRay_model)
+        print('Step '+str(debugCounter));debugCounter+=1
         #predictions = chest_XRay_model.predict(input_cv2_image[None,:,:,:])
 
+        with open(('./'+version_file_name), 'r+') as version_file2:
+            crt_version="v1.{}".format(int(version_file2.read()) )
+        print('Step '+str(debugCounter));debugCounter+=1    
+
         # prediction_dc.collect(ADScores)
-        outDict = {"chestXrayScore": str(predictions), "chestXrayCAM":as_string_b64encoded_pickled(serialized_cam_image)}
+        outDict = {"chestXrayScore": str(predictions), \
+        "chestXrayCAM":as_string_b64encoded_pickled(serialized_cam_image),\
+        "modelversion": crt_version}
         return json.dumps(outDict)
     except Exception as e:
-        return(str(e))
+        return(str(traceback.format_exc()))
 
 
 ####################################
@@ -134,7 +167,7 @@ def main():
 
     fully_trained_weights_dir=os.path.join(
         amlWBSharedDir,
-        os.path.join(*(['chestxray', 'output',  'trained_models_weights'])))
+        os.path.join(*(['chestxray', 'output',  'fully_trained_models'])))
     crt_models = get_files_in_dir(fully_trained_weights_dir)
     print(fully_trained_weights_dir)
     print(crt_models)
@@ -146,12 +179,19 @@ def main():
     print(test_images_dir)
     print(len(test_images))
 
+    # save a new version value
+    version_file_path=os.path.join(amlWBSharedDir,  os.path.join(*(['chestxray','output','persist_dir', version_file_name])))
+    crt_version = get_increasing_version_number(version_file_path)
+    #with open(('./'+version_file_name), "w") as local_version_file:
+    #    local_version_file.write("{}".format(crt_version))
+    #print('crt model version saved in ' + './'+version_file_name)    
+
     # score in local mode (i.e. here in main function)
-    model = azure_chestxray_utils.build_DenseNetImageNet201_model()
+    model = azure_chestxray_keras_utils.build_model(DenseNetImageNet121)
     model.load_weights(os.path.join(
         fully_trained_weights_dir, densenet_weights_file_name))
 
-    print('Model weoghts loaded!')
+    print('Model weights loaded!')
 
     import cv2
     cv2_image = cv2.imread(os.path.join(test_images_dir,test_images[0]))
@@ -193,7 +233,14 @@ def main():
     import shutil
     shutil.copyfile(
         os.path.join( fully_trained_weights_dir,densenet_weights_file_name), 
-        os.path.join( working_dir,densenet_weights_file_name)) 
+        os.path.join( working_dir,densenet_final_weights_file_name)) 
+        
+    # save version file in "local" path
+    shutil.copyfile(version_file_path, os.path.join( working_dir, version_file_name))
+
+    # save version file in "output" path 
+    shutil.copyfile(version_file_path, os.path.join( fully_trained_weights_dir, version_file_name))
+    print("Version file saved in " + os.path.join( fully_trained_weights_dir, version_file_name))
 
     os.chdir(working_dir)
 
