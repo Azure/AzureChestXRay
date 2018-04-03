@@ -146,9 +146,11 @@ georgedockeraccount/utils_with_amlwb_base_gpu   azcopyenabled       2e6da7a1351c
 \Code\02_Model\040_cam_simple.ipynb : shows CAM visualizations after training but before o16n.  
 \Code\03_Deployment\000_test_cam_api.ipynb: shows cam visualization after deployment (o16n).  
    
-You can use this query (by ssh on the remote compute host) to monitor GPU usage:  
+You can use this query (by ssh on the remote compute host) to monitor GPU usage (use __nvidia-smi -L__ to see available GPUs):  
 nvidia-smi --query-gpu=timestamp,name,pci.bus_id,driver_version,pstate,pcie.link.gen.max,pcie.link.gen.current,temperature.gpu,utilization.gpu,utilization.memory,memory.total,memory.free,memory.used --format=csv -l 5  
-  
+
+pstate values range is from P0 (maximum performance) to P12 (minimum performance).  
+
   
 4. Operationalize  
   
