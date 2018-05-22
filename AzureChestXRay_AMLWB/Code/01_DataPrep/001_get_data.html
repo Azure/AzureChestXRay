@@ -11782,7 +11782,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Allow multiple displays per cell</span>
@@ -11798,7 +11798,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># AZUREML_NATIVE_SHARE_DIRECTORY mapping to host dir is set by _nativeSharedDirectory_ in .compute file </span>
@@ -11823,7 +11823,7 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[12]:</div>
+<div class="prompt output_prompt">Out[2]:</div>
 
 
 
@@ -11840,13 +11840,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Use the Azure Machine Learning data collector to log various metrics</span>
 
-<span class="kn">from</span> <span class="nn">azureml.logging</span> <span class="k">import</span> <span class="n">get_azureml_logger</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">get_azureml_logger</span><span class="p">()</span>
+<span class="c1"># from azureml.logging import get_azureml_logger</span>
+<span class="c1"># logger = get_azureml_logger()</span>
 </pre></div>
 
 </div>
@@ -11856,7 +11856,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Use Azure Machine Learning history magic to control history collection</span>
@@ -11871,7 +11871,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># import utlity functions</span>
@@ -11896,7 +11896,7 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[15]:</div>
+<div class="prompt output_prompt">Out[5]:</div>
 
 
 
@@ -11913,7 +11913,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># create the file path variables </span>
@@ -11949,7 +11949,7 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[16]:</div>
+<div class="prompt output_prompt">Out[6]:</div>
 
 
 
@@ -11962,7 +11962,7 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[16]:</div>
+<div class="prompt output_prompt">Out[6]:</div>
 
 
 
@@ -11975,7 +11975,7 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[16]:</div>
+<div class="prompt output_prompt">Out[6]:</div>
 
 
 
@@ -11988,7 +11988,7 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[16]:</div>
+<div class="prompt output_prompt">Out[6]:</div>
 
 
 
@@ -12005,7 +12005,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create this function in file &#39;{credential_info_path}/get_data_access_secrets.py&#39;</span>
@@ -12016,8 +12016,9 @@ div#notebook {
 <span class="c1"># </span>
 <span class="c1"># For example:</span>
 <span class="n">CredentialsFileName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">credential_info_path</span><span class="p">,</span> <span class="s1">&#39;get_data_access_secrets.py&#39;</span><span class="p">)</span> 
-<span class="n">crt_container</span> <span class="o">=</span> <span class="s1">&#39;https://somedatastore.blob.core.windows.net/somecontainer&#39;</span> 
+<span class="n">crt_container</span> <span class="o">=</span> <span class="s1">&#39;https://somedatastore.blob.core.windows.net/somecontainer&#39;</span>
 <span class="n">crt_source_Key</span> <span class="o">=</span> <span class="s1">&#39;somesourceKey&#39;</span>
+
 <span class="kn">import</span> <span class="nn">os.path</span> 
 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">CredentialsFileName</span><span class="p">):</span> 
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Credentials file not found, will be written!&#39;</span><span class="p">)</span> 
@@ -12051,14 +12052,38 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>Credentials file found at /azureml-share/code/notShared/get_data_access_secrets.py
+<pre>Credentials file not found, will be written!
 </pre>
 </div>
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[17]:</div>
+<div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>152</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Credentials file written at /azureml-share/code/notShared/get_data_access_secrets.py
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[7]:</div>
 
 
 
@@ -12075,7 +12100,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># read credentials info</span>
@@ -12096,13 +12121,14 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#check azcopy is available. Uncomment second line to print _response_ if needed</span>
 
 <span class="n">response</span> <span class="o">=</span> <span class="o">!</span>azcopy
 <span class="c1"># response</span>
+<span class="c1"># !azcopy --help</span>
 </pre></div>
 
 </div>
@@ -12112,13 +12138,13 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># copy data to local host dir</span>
 <span class="c1"># add {  --source-key {crt_key}  } if needed</span>
 
-<span class="n">answer</span> <span class="o">=</span> <span class="o">!</span>yes <span class="p">|</span> azcopy <span class="err">\</span>
+<span class="n">answer</span> <span class="o">=</span> <span class="o">!</span>yes <span class="p">|</span> azcopy --quiet <span class="err">\</span>
     <span class="o">--</span><span class="n">source</span> <span class="p">{</span><span class="n">crt_container</span><span class="p">}</span> \
     <span class="o">--</span><span class="n">destination</span> <span class="p">{</span><span class="n">nih_chest_xray_data_dir</span><span class="p">}</span> \
     <span class="o">--</span><span class="n">recursive</span>
@@ -12129,9 +12155,20 @@ div#notebook {
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The above cell will take about 20 minutes to run. While it runs, you can monitor the progress by ssh-ing 
+ into your compute context machine and running:<br>
+ find /datadrive01/amlwbShare/current_exp_account/current_workspace/current_exp/chestxray/data/ChestX-ray8/ChestXray-NIHCC/ -type f | wc -l</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">answer</span><span class="p">[</span><span class="o">-</span><span class="mi">7</span><span class="p">:]</span>
@@ -12147,19 +12184,19 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[21]:</div>
+<div class="prompt output_prompt">Out[11]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;[2018/02/06 05:19:05] Transfer summary:&#39;,
+<pre>[&#39;[2018/05/21 23:48:45] Transfer summary:&#39;,
  &#39;-----------------&#39;,
  &#39;Total files transferred: 112120&#39;,
  &#39;Transfer successfully:   112120&#39;,
  &#39;Transfer skipped:        0&#39;,
  &#39;Transfer failed:         0&#39;,
- &#39;Elapsed time:            00.00:09:57&#39;]</pre>
+ &#39;Elapsed time:            00.00:14:52&#39;]</pre>
 </div>
 
 </div>
@@ -12170,7 +12207,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">nih_chest_xray_data_dir</span>
@@ -12187,7 +12224,7 @@ div#notebook {
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[22]:</div>
+<div class="prompt output_prompt">Out[12]:</div>
 
 
 
@@ -12215,7 +12252,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#  run below command in amlwb cli to save current sessin as html</span>

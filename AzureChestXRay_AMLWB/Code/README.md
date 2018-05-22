@@ -3,17 +3,17 @@ Install Azure Machine Learning Workbench AMLWB (https://docs.microsoft.com/en-us
 Open an amlwb cli and follow this [guide](https://docs.microsoft.com/en-us/azure/machine-learning/preview/tutorial-classifying-iris-part-2#execute-scripts-in-the-azure-machine-learning-cli-window) and this Azure ML o16n [cheat sheet](https://gist.github.com/georgeAccnt-GH/028c376f3139a445ba3d19705418da5f) to create an AMLWB worspace, run ML experiments, and deploy models: 
 
 1. Set up your environment:   
-  REM login by using the aka.ms/devicelogin site      
-  az login      
+  REM login by using the aka.ms/devicelogin site  
+    az login      
         
-  REM lists all Azure subscriptions you have access to (# make sure the right subscription is selected (column isDefault))      
-  az account list -o table      
+  REM lists all Azure subscriptions you have access to (# make sure the right subscription is selected (column isDefault))  
+    az account list -o table      
         
-  REM sets the current Azure subscription to the one you want to use      
-  az account set -s <subscriptionId>      
+  REM sets the current Azure subscription to the one you want to use  
+    az account set -s <subscriptionId>      
         
-  REM verifies that your current subscription is set correctly      
-  az account show      
+  REM verifies that your current subscription is set correctly  
+    az account show      
      
   REM  Create an experimentation account and and azure ml workspace using the portal   
      
@@ -34,44 +34,35 @@ Open an amlwb cli and follow this [guide](https://docs.microsoft.com/en-us/azure
      
      Make sure the vm fqdn is set up. 
      
-     The disk sizes must cover data requirements. Default data disks do not survive machine reboot events. To keep the data available between machine reboots, either make the OS disk larger, or attach an external Azure VHD. Use either the Azure [portal](https://portal.azure.com) or [cli](https://docs.microsoft.com/en-us/azure/machine-learning/preview/known-issues-and-troubleshooting-guide#vm-disk-is-full) to resize the VM disk if needed:    
-    #Deallocate VM (stopping will not work)   
-    $ az vm deallocate --resource-group myResourceGroup  --name myVM   
-    # Update Disc Size   
-    $ az disk update --resource-group myResourceGroup --name myVM --size-gb 250   
-    # Start VM       
+     The disk sizes must cover data requirements. Default data disks do not survive machine reboot events. To keep the data available between machine reboots, either make the OS disk larger, or attach an external Azure VHD. Use either the Azure [portal](https://portal.azure.com) or [cli](https://docs.microsoft.com/en-us/azure/machine-learning/preview/known-issues-and-troubleshooting-guide#vm-disk-is-full) to resize the VM disk if needed:  
+    #Deallocate VM (stopping will not work  
+    $ az vm deallocate --resource-group myResourceGroup  --name myVM  
+    # Update Disc Size  
+    $ az disk update --resource-group myResourceGroup --name myVM --size-gb 250  
+    # Start VM  
     $ az vm start --resource-group myResourceGroup  --name myVM   
      
-  - ssh into the remote VM and create the folder structure that will be used by AMLWB to map host locations to directories in running AMLWB containers (see below explanations for .runconfig file setup):   
-  loginuser@deeplearninggpuvm:~$ sudo mkdir -p /datadrive01/amlwbShare   
-  loginuser@deeplearninggpuvm:~$ sudo chmod ugo=rwx /datadrive01/amlwbShare/   
-  loginuser@deeplearninggpuvm2:~$ ls -l /datadrive01/   
-  total 4   
-  drwxrwxrwx 2 root root 4096 Feb  5 18:33 amlwbShare   
+  - ssh into the remote VM and create the folder structure that will be used by AMLWB to map host locations to directories in running AMLWB containers 
+  (see below explanations for __<compute_context_name>.runconfig__ and __<compute_context_name>.compute__ file setup). The directory listed below must match  the value chosen by you for the 'nativeSharedDirectory' variable in the AMLWB   __<compute_context_name>.compute___ file defined below in step 2.4, e.g. 'nativeSharedDirectory: /datadrive01/amlwbShare/' :  
+    loginuser@deeplearninggpuvm:~$ sudo mkdir -p /datadrive01/amlwbShare  
+    loginuser@deeplearninggpuvm:~$ sudo chmod ugo=rwx /datadrive01/amlwbShare/  
+    loginuser@deeplearninggpuvm2:~$ ls -l /datadrive01/  
+    > total 4  
+    > drwxrwxrwx 2 root root 4096 Feb  5 18:33 amlwbShare   
       
   2.2 Get the NIH Chext Xray images   
   You can either manually download [NIH Chest xray data](https://nihcc.app.box.com/v/ChestXray-NIHCC) to the remote linux VM that will be used for training (see host directory locations below), or move it to a location like a blob store from where the first notebook of this project (\Code\01_DataPrep\001_get_data.ipynb) will download the data to same remote linux VM. We show below the latter approach:  
   - Get Chext Xray images from https://nihcc.app.box.com/v/ChestXray-NIHCC   
   Store the files from [images](https://nihcc.app.box.com/v/ChestXray-NIHCC/folder/37178474737) dir as __unarchived__ files in a blob storage account.    
-  They will be downloaded later in Code\01_DataPrep\001_get_data.ipynb, and will land into the directory shown below on the remote VM created above:   
-  loginuser@deeplearninggpuvm2:~$ ls /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC/ | head -2   
-  00000001_000.png   
-  00000001_001.png   
+  They will be downloaded later in Code\01_DataPrep\001_get_data.ipynb, and will land into the directory shown below on the remote VM created above:  
+    loginuser@deeplearninggpuvm2:~$ ls /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC/ | head -2  
+    > 00000001_000.png  
+    > 00000001_001.png   
   
   Note:  
   001_get_data.ipynb will create /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC/ so this path does nto have to be cerated at this stage.   
    
   2.3 Get Data_Entry_2017.csv and BBox_List_2017.csv (NIH patient-image map info and NIH BBox) files  
-  First create the detination directory:  
-  loginuser@deeplearninggpuvm:~$ sudo mkdir -p /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC_other   
-  loginuser@deeplearninggpuvm:~$ sudo chmod ugo=rwx /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC_other
-  
-  Second, download manually NIH data files [Data_Entry_2017.csv](https://nihcc.app.box.com/v/ChestXray-NIHCC) and BBox_List_2017.csv into the detination directory created above:    
-  loginuser@deeplearninggpuvm2:~$ ls -l /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC_other   
-  total 7680   
-  -rw-rw-r-- 1 loginvm0011 loginvm0011   92416 Feb  8 03:39 BBox_List_2017.csv
-  -rw-rw-r-- 1 loginvm0011 loginvm0011    1006 Mar 28 04:44 blacklist.csv
-  -rw-rw-r-- 1 loginvm0011 loginvm0011 7861152 Feb  7 02:54 Data_Entry_2017.csv   
    
   Notes:  
   Data_Entry_2017.csv is the patients to images map and will be used by \Code\02_Model\000_preprocess.ipynb to create the train/validate/test partitions.   
@@ -80,12 +71,12 @@ Open an amlwb cli and follow this [guide](https://docs.microsoft.com/en-us/azure
    
      
   2.4      
-    - in AMLWB cli, create AMLWB compute context:      
-  az ml computetarget attach remotedocker --name <compute_context_name> --address <dsvm_fqdn> --username <dsvm_login> --password <dsvm_password>        
+    - in AMLWB cli, create AMLWB compute context:  
+    az ml computetarget attach remotedocker --name <compute_context_name> --address <dsvm_fqdn> --username <dsvm_login> --password <dsvm_password>        
   the command above will create \aml_config\<compute_context_name>.runconfig and \aml_config\<compute_context_name>.compute files that control the AMLWB compute contexts   
    
-    - Check the existing compute targets:        
-  az ml computetarget list      
+    - Check the existing compute targets:  
+    az ml computetarget list      
         
   For GPU compute contexts:      
     - edit <compute_context_name>.runconfig file:      
@@ -94,7 +85,7 @@ Open an amlwb cli and follow this [guide](https://docs.microsoft.com/en-us/azure
         PrepareEnvironment: true        
     - edit <compute_context_name>.compute file:        
 	baseDockerImage: georgedockeraccount/utils_with_amlwb_base_gpu:azcopyenabled      
-	nativeSharedDirectory: /data/datadrive01/amlwbShare/      
+	nativeSharedDirectory: /datadrive01/amlwbShare/      
 	nvidiaDocker: true   
 	sharedVolumes: true  
 	
@@ -108,29 +99,58 @@ Open an amlwb cli and follow this [guide](https://docs.microsoft.com/en-us/azure
 	nativeSharedDirectory: /data/datadrive01/amlwbShare/        
 	sharedVolumes: true        
 	      
-          
-    - go back to cli:        
-  az ml experiment prepare -c <compute_context_name>      
+  2.5            
+    - go back to cli:  
+    az ml experiment prepare -c <compute_context_name>      
   
-    - while the preparation is running, you can check on linux host machine how docker is running:        
-  	sudo docker images        
-  	sudo docker ps -a   
+    - while the preparation is running, you can check on linux host machine how docker is running:  
+    sudo docker images  
+    sudo docker ps -a   
    
-E.g.:   
-loginuser@deeplearninggpuvm:~$ sudo docker images   
-REPOSITORY                                      TAG                 IMAGE ID            CREATED             SIZE   
-azureml_88865f7583e9e1fd502a32a7717aa1f0        latest              a35a05a9b295        16 minutes ago      7.21GB   
-georgedockeraccount/utils_with_amlwb_base_gpu   azcopyenabled       2e6da7a1351c        4 weeks ago         3.89GB   
+E.g.:  
+    loginuser@deeplearninggpuvm:~$ sudo docker images  
+    > REPOSITORY                                      TAG                 IMAGE ID            CREATED             SIZE  
+    > azureml_88865f7583e9e1fd502a32a7717aa1f0        latest              a35a05a9b295        16 minutes ago      7.21GB  
+    > georgedockeraccount/utils_with_amlwb_base_gpu   azcopyenabled       2e6da7a1351c        4 weeks ago         3.89GB   
    
     Notes:  
     See \Code\docker\Dockerfile file if you want to recreate any of the above 2 base docker images.  
     
+  2.6 Host - AMLWB container directory mapping:             
+    The __az ml experiment prepare__ command will create this directory on the host computer  
+/datadrive01/amlwbShare/crt_ea/grt_work_space/  
+that gets mapped into 
+'/azureml-share/' in the AMLWB container. For example files seeen at '/azureml-share/chestxray/output' in the container are located at 
+/datadrive01/amlwbShare/crt_ea/grt_work_space/chestxray/output on the host computer.
+     
    
    
-3. Use AMLWB File->Open PowerShell to opne a PS cli and then type __az ml notebook start__ to start notebook server and run experiment notebooks: 	   
-\Code\01_DataPrep\001_get_data.ipynb: takes 20 mins to downloaded the data from a blob storage account.  
-  Notes: Do not forget to add --source-key {crt_key} when calling azcopy (as described in the noebook) if the blob is not public.
-\Code\02_Model\000_preprocess.ipynb : creates the train/validate/test partitions    
+3. Use AMLWB File->Open PowerShell to open a PS cli window and then type __az ml notebook start__ to start notebook server and run experiment notebooks. 
+Select the desired kernel (i.e. __crt_experiment compute_context_name__)
+  
+\Code\01_DataPrep\001_get_data.ipynb  
+Notes for running 001_get_data.ipynb:   
+   - set __crt_container__ notebook variable __BEFORE__ the 001_get_data.ipynb is run.   
+   - add --source-key {crt_key} when calling azcopy (as described in the notebook) if the blob is not public.   
+   - the notebook takes takes 20 mins to downloaded the data from the blob storage account. While downloading the images, you can monitor the progress by ssh-ing into your compute context machine and running:  
+    loginuser@deeplearninggpuvm:~$ find /data/datadrive01/amwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC/ -type f | wc  
+    
+\Code\02_Model\000_preprocess.ipynb   
+Notes for running 00_preprocess.ipynb:   
+ - creates the train/validate/test partitions
+ - Create the dir structure for aditional files collected in step 2.3 above (and see point __2.6__):   
+ 	-   First create the directories:  
+    loginuser@deeplearninggpuvm:~$ sudo mkdir -p /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC_other  
+    loginuser@deeplearninggpuvm:~$ sudo chmod ugo=rwx /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC_other
+   
+ 	-   Second, download manually NIH data files [Data_Entry_2017.csv](https://nihcc.app.box.com/v/ChestXray-NIHCC) and BBox_List_2017.csv into the detination directory created above:  
+    loginuser@deeplearninggpuvm2:~$ ls -l /datadrive01/amlwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/data/ChestX-ray8/ChestXray-NIHCC_other  
+    total 7680  
+    -rw-rw-r-- 1 loginvm0011 loginvm0011   92416 Feb  8 03:39 BBox_List_2017.csv  
+    -rw-rw-r-- 1 loginvm0011 loginvm0011    1006 Mar 28 04:44 blacklist.csv  
+    -rw-rw-r-- 1 loginvm0011 loginvm0011 7861152 Feb  7 02:54 Data_Entry_2017.csv   
+
+
 \Code\02_Model\010_train.ipynb : trains a densenet model (pretrained on imagenet) on NIH chest xray data using Keras deep learning framework  
 \Code\02_Model\060_Train_pyTorch.ipynb: trains a densenet model (pretrained on imagenet) on NIH chest xray data using pytorch.   
 	Fast testing settings (notebook script variables are in bold):    
@@ -160,11 +180,11 @@ useful commands:
 
 4.1. run Code\src\score_image_and_cam.py in ubunDSVMCPU_test_o16n context (using the AMLWB GUI or cli). Result:  
  - schema file is saved in fully_trained_weights_dir variable (line 209):  
-loginuser@deeplearninggpuvm:~$ ls -l /data/datadrive01/amwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/output/trained_models_weights/  
-total 28660  
--rw-r--r-- 1 root        root          201432 Jan 24 06:43 chest_XRay_cam_service_schema.json  
--rw-rw-r-- 1 loginuser   loginuser     29142168 Jan 17 19:04 weights_onlychexnet_14_weights_712split_epoch_029_val_loss_147.7599 - Copy.hdf5  
-loginuser@deeplearninggpuvm:~$ 
+    loginuser@deeplearninggpuvm:~$ ls -l /data/datadrive01/amwbShare/crt_ea/grt_work_space/crt_experiment/chestxray/output/trained_models_weights/  
+    total 28660  
+    > -rw-r--r-- 1 root        root          201432 Jan 24 06:43 chest_XRay_cam_service_schema.json  
+    > -rw-rw-r-- 1 loginuser   loginuser     29142168 Jan 17 19:04 weights_onlychexnet_14_weights_712split_epoch_029_val_loss_147.7599 - Copy.hdf5  
+    loginuser@deeplearninggpuvm:~$ 
 
 4.2.  Copy to local computer (i.e. the one running AMLWB) the schema file from the compute context host VM. For operationalization, we need all these in a temp empty directory - this will be the 016n directory:  
    - all files in Code\src dir (azure_chestxray_cam.py, azure_chestxray_keras_utils.py, azure_chestxray_utils.py, and score_image_and_cam.py). 
@@ -177,55 +197,55 @@ loginuser@deeplearninggpuvm:~$
      > Make sure conda_dependencies_o16n.yml has "git" in the conda install section.  
      
      Typical content of the 016n directory:  
-     C:\Users\someuser\Documents\AzureML\ChestXRayAMLWB\o16n>dir  
-         Directory of C:\Users\someuser\Documents\AzureML\ChestXRayAMLWB\o16n  
-        01/24/2018  04:15 AM    <DIR>          .  
-        01/24/2018  04:15 AM    <DIR>          ..  
-        01/24/2018  01:08 AM             6,743 azure_chexnet_cam.py  
-        01/23/2018  04:00 PM             2,454 azure_chexnet_utils.py  
-        01/24/2018  01:59 AM           201,432 chest_XRay_cam_service_schema.json  
-        01/24/2018  01:08 AM             1,763 conda_dependencies_o16n.yml  
-        01/24/2018  01:41 AM             8,585 score_image_and_cam.py  
-        01/24/2018  02:00 AM        29,142,168 weightschexnet.hdf5  
-                       6 File(s)     29,363,145 bytes  
+    C:\Users\someuser\Documents\AzureML\ChestXRayAMLWB\o16n>dir  
+      Directory of C:\Users\someuser\Documents\AzureML\ChestXRayAMLWB\o16n  
+      01/24/2018  04:15 AM    <DIR>  
+      01/24/2018  04:15 AM    <DIR>  
+      01/24/2018  01:08 AM             6,743 azure_chexnet_cam.py  
+      01/23/2018  04:00 PM             2,454 azure_chexnet_utils.py  
+      01/24/2018  01:59 AM           201,432 chest_XRay_cam_service_schema.json  
+      01/24/2018  01:08 AM             1,763 conda_dependencies_o16n.yml  
+      01/24/2018  01:41 AM             8,585 score_image_and_cam.py  
+      01/24/2018  02:00 AM        29,142,168 weightschexnet.hdf5  
+                  6 File(s)     29,363,145 bytes  
                   2 Dir(s)  314,218,704,896 bytes free  
                   
 
 4.3. Open an AMLWB CLI window (prefrably the ps version) using File->"open PowerShell") and navigate to 016n directory:  
    - See if Microsoft.MachineLearningCompute, Microsoft.ContainerRegistry and Microsoft.ContainerService are registered:  
-C:\Users\ghiordan\Documents\AzureML\ChestXRayAMLWB>az provider show -n Microsoft.MachineLearningCompute -o table  
+    C:\Users\ghiordan\Documents\AzureML\ChestXRayAMLWB>az provider show -n Microsoft.MachineLearningCompute -o table  
 Namespace                         RegistrationState  
 --------------------------------  -------------------  
 Microsoft.MachineLearningCompute  Registered  
-C:\Users\ghiordan\Documents\AzureML\ChestXRayAMLWB>az provider show -n Microsoft.ContainerService -o table  
+    C:\Users\ghiordan\Documents\AzureML\ChestXRayAMLWB>az provider show -n Microsoft.ContainerService -o table  
 Namespace                   RegistrationState  
 --------------------------  -------------------   
 Microsoft.ContainerService  Registered   
   
-C:\Users\ghiordan\Documents\AzureML\ChestXRayAMLWB>az provider show -n Microsoft.ContainerRegistry -o table  
+    C:\Users\ghiordan\Documents\AzureML\ChestXRayAMLWB>az provider show -n Microsoft.ContainerRegistry -o table  
 Namespace                    RegistrationState  
 ---------------------------  -------------------  
 Microsoft.ContainerRegistry  Registered    
 or, to see everything registered:  
-az provider list --query "[].{Provider:namespace, Status:registrationState}" --out table  
+    az provider list --query "[].{Provider:namespace, Status:registrationState}" --out table  
   
 if not, register them:  
-az provider register -n Microsoft.MachineLearningCompute  
-az provider register -n Microsoft.ContainerRegistry  
-az provider register -n Microsoft.ContainerService  
+    az provider register -n Microsoft.MachineLearningCompute  
+    az provider register -n Microsoft.ContainerRegistry  
+    az provider register -n Microsoft.ContainerService  
 
 5. Typical deployment session:  
-az ml account modelmanagement set -n base_name_mma -g base_name_rsg  
-az ml env setup --cluster -n base_name_envk8ns001 -l westeurope -g base_name_rsg --yes  
-az ml env set -n base_name_envk8ns001 -g base_name_rsg  
+    az ml account modelmanagement set -n base_name_mma -g base_name_rsg  
+    az ml env setup --cluster -n base_name_envk8ns001 -l westeurope -g base_name_rsg --yes  
+    az ml env set -n base_name_envk8ns001 -g base_name_rsg  
   
-az account show  
-az ml env show  
-az ml account modelmanagement show  
+    az account show  
+    az ml env show  
+    az ml account modelmanagement show  
   
-az ml image create -n base_name_dateasstring-img001 --model-file model001.pkl --model-file model002.pkl -f score_signal.py -r python -s scoring_script_schema.json -c conda_dependencies.yml -d base_name_preprocess.py -d base_name_utils.py  
-az ml service create realtime --image-id cd09e02axx -n base_name_srvc8ns001   
-az ml service delete realtime -i base_name_srvc8ns001.base_name_srvc8ns001-c88xxx.eastus2  
-az ml service create realtime --image-id cd09e02axx -n base_name_srvc8ns002  
-az ml service keys realtime -i base_name_srvc8ns002.base_name_srvc8ns002-c888xxx.eastus2  
+    az ml image create -n base_name_dateasstring-img001 --model-file model001.pkl --model-file model002.pkl -f score_signal.py -r python -s scoring_script_schema.json -c conda_dependencies.yml -d base_name_preprocess.py -d base_name_utils.py  
+    az ml service create realtime --image-id cd09e02axx -n base_name_srvc8ns001  
+    az ml service delete realtime -i base_name_srvc8ns001.base_name_srvc8ns001-c88xxx.eastus2  
+    az ml service create realtime --image-id cd09e02axx -n base_name_srvc8ns002  
+    az ml service keys realtime -i base_name_srvc8ns002.base_name_srvc8ns002-c888xxx.eastus2  
   

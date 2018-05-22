@@ -11843,8 +11843,8 @@ div#notebook {
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Use the Azure Machine Learning data collector to log various metrics</span>
-<span class="kn">from</span> <span class="nn">azureml.logging</span> <span class="k">import</span> <span class="n">get_azureml_logger</span>
-<span class="n">logger</span> <span class="o">=</span> <span class="n">get_azureml_logger</span><span class="p">()</span>
+<span class="c1"># from azureml.logging import get_azureml_logger</span>
+<span class="c1"># logger = get_azureml_logger()</span>
 </pre></div>
 
 </div>
@@ -11985,8 +11985,7 @@ div#notebook {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>total 29396
--rw-r--r-- 1 root root 30097832 Feb 28 06:59 azure_chest_xray_14_weights_712split_epoch_002_val_loss_213.3450.hdf5
+<pre>total 0
 </pre>
 </div>
 </div>
@@ -12085,6 +12084,34 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># gpu_fraction = 0.4</span>
+<span class="c1"># gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=gpu_fraction)</span>
+<span class="c1"># sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># sess.close</span>
+</pre></div>
+
+</div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_available_gpus</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;</span>
 
@@ -12097,9 +12124,10 @@ div#notebook {
 
 <span class="c1"># get number of available GPUs</span>
 <span class="n">num_gpu</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_available_gpus</span><span class="p">())</span>
+<span class="n">num_gpu</span>
 
 <span class="c1"># keras multi_gpu_model slices the data to different GPUs. see https://keras.io/utils/#multi_gpu_model for more details.</span>
-<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">48</span> <span class="o">*</span> <span class="n">num_gpu</span>
+<span class="n">batch_size</span> <span class="o">=</span><span class="n">num_gpu</span> <span class="o">*</span>  <span class="mi">2</span> <span class="c1">#4 #* 48  </span>
 
 
 <span class="c1"># use Keras multi-gpu model, so we need to make sure the batch_size is divisible by num_gpu.</span>
@@ -12109,10 +12137,30 @@ div#notebook {
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt output_prompt">Out[12]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>2</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># device_lib.list_local_devices()</span>
@@ -12126,7 +12174,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># use Keras multi-gpu model, so we need to make sure the batch_size is divisible by num_gpu.</span>
@@ -12286,7 +12334,7 @@ div#notebook {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">if</span> <span class="n">num_gpu</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -12328,7 +12376,7 @@ div#notebook {
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>using 2 GPUs
 Downloading data from https://github.com/titu1994/DenseNet/releases/download/v3.0/DenseNet-BC-121-32-no-top.h5
-33202176/33199896 [==============================] - 1s 0us/step
+33202176/33199896 [==============================] - 4s 0us/step
 Weights for the model were loaded successfully
 </pre>
 </div>
@@ -12340,10 +12388,10 @@ Weights for the model were loaded successfully
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">num_workers</span> <span class="o">=</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">num_gpu</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">num_workers</span> <span class="o">=</span> <span class="n">num_gpu</span><span class="o">*</span><span class="mi">2</span> <span class="c1">#*10</span>
 
 <span class="n">model_multi_gpu</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="n">Adam</span><span class="p">(</span><span class="n">lr</span><span class="o">=</span><span class="n">initial_lr</span><span class="p">),</span> <span class="n">loss</span><span class="o">=</span><span class="n">unweighted_binary_crossentropy</span><span class="p">)</span>
 
@@ -12383,25 +12431,25 @@ Weights for the model were loaded successfully
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>for DataGenSequence train total rows are: 68508 , len is 713
-for DataGenSequence validation total rows are: 9495 , len is 98
+<pre>for DataGenSequence train total rows are: 68508 , len is 17127
+for DataGenSequence validation total rows are: 9495 , len is 2373
 Epoch 1/2
-713/713 [==============================] - 1421s 2s/step - loss: 214.4905 - val_loss: 220.6052
+17127/17127 [==============================] - 4815s 281ms/step - loss: 9.5021 - val_loss: 9.0379
 Epoch 2/2
-713/713 [==============================] - 1383s 2s/step - loss: 207.5056 - val_loss: 218.3652
+17127/17127 [==============================] - 4767s 278ms/step - loss: 9.0790 - val_loss: 10.1995
 </pre>
 </div>
 </div>
 
 <div class="output_area">
 
-<div class="prompt output_prompt">Out[14]:</div>
+<div class="prompt output_prompt">Out[16]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;keras.callbacks.History at 0x7f4e18388eb8&gt;</pre>
+<pre>&lt;keras.callbacks.History at 0x7f869c5da128&gt;</pre>
 </div>
 
 </div>
@@ -12412,7 +12460,7 @@ Epoch 2/2
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># jupyter nbconvert --to html .\Code\02_Model\010_train.ipynb</span>
