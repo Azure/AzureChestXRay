@@ -1,7 +1,7 @@
 # Introduction
 This repository contains the code for the blog post: [Using Microsoft AI to Build a Lung-Disease Prediction Model using Chest X-Ray Images](https://blogs.technet.microsoft.com/machinelearning/2018/03/07/using-microsoft-ai-to-build-a-lung-disease-prediction-model-using-chest-x-ray-images/), by Xiaoyong Zhu, George Iordanescu, Ilia Karmanov, data scientists from Microsoft, and Mazen Zawaideh, radiologist resident from University of Washington Medical Center.
 
-In this repostory, we provide you the Keras code (001-003 Jupyter Notebooks under AzureChestXRay_AMLWB\Code\02_Model) and PyTorch code (AzureChestXRay_AMLWB\Code\02_Model060_Train_pyTorch). You should be able to run the code from scratch and get the below result using Azure Machine Learning platform or run it using your own GPU machine.
+In this repostory, we provide you the Keras code (`001-003 Jupyter Notebooks under AzureChestXRay_AMLWB\Code\02_Model`) and PyTorch code (`AzureChestXRay_AMLWB\Code\02_Model060_Train_pyTorch`). You should be able to run the code from scratch and get the below result using Azure Machine Learning platform or run it using your own GPU machine.
 
 # Get Started
 
@@ -9,11 +9,10 @@ In this repostory, we provide you the Keras code (001-003 Jupyter Notebooks unde
 
 If you are using Azure Machine Learning as the training platform, all the dependencies should be installed. However, if you are trying out in your own environment, you should also install [keras-contrib](https://github.com/keras-team/keras-contrib) repository to run Keras code.
 
-If you are trying out the lung detection algorithm, you need to install a few other additional libraries. Please refer to the README.md file under folder AzureChestXRay\AzureChestXRay_AMLWB\Code\src\finding_lungs for more details.
+If you are trying out the lung detection algorithm, you need to install a few other additional libraries. Please refer to the `README.md` file under folder `AzureChestXRay\AzureChestXRay_AMLWB\Code\src\finding_lungs` for more details.
 
 ## Running the code
-To run the code, you need to get the NIH Chest X-ray Dataset from here: https://nihcc.app.box.com/v/ChestXray-NIHCC. You need to get all the image files (all the files under `images` folder in NIH Dataset), Data_Entry_2017.csv file, as well as the Bounding Box data BBox_List_2017.csv. You might also want to remove a few low_quality images (Please refer to subfolder AzureChestXRay_AMLWB\Code\src\finding_lungs for more details).
-
+To run the code, you need to get the NIH Chest X-ray Dataset from here: https://nihcc.app.box.com/v/ChestXray-NIHCC. You need to get all the image files (all the files under `images` folder in NIH Dataset), `Data_Entry_2017.csv` file, as well as the Bounding Box data `BBox_List_2017.csv`. You might also want to remove a few low_quality images (Please refer to subfolder `AzureChestXRay_AMLWB\Code\src\finding_lungs` for more details).
 
 
 #	Tools and Platforms
@@ -43,7 +42,7 @@ There are several discussions in the community on the efficacy of using NLP to m
 - http://cs231n.stanford.edu/reports/2017/pdfs/527.pdf for pre-processing the data
 - https://arxiv.org/abs/1711.08760 for some other thoughts on the model architecture and the relationship between different diseases
 - Baseline result: https://arxiv.org/abs/1705.02315
-- Image Localization http://arxiv.org/abs/1512.04150
+- Image Localization: http://arxiv.org/abs/1512.04150 
 
 # Conclusion, acknowledgement, and thanks
 Some of the pre-processing code for Keras is borrowed from [the dr.b repository](https://github.com/taoddiao/dr.b).
